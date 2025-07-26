@@ -3,12 +3,17 @@
 # Three Functions (insertFile, deleteFile, updateFile)
 
 1. insertFile 
-  - you will provide a file in return it will provide you a path in this case ('/uploads/${targetYear}/${folderNameYouWant}/${nanoid}')
-  - the function will save the file in the uploads folder along with your specific folderName
+  - You will provide a file in return it will provide you a path in this case ('/uploads/${targetYear}/${folderNameYouWant}/${nanoid}')
+  - The function will save the file in the uploads folder along with your specific folderName
   - here nanoid is package which generates a nano uuid which is default length is 21
+    
 2. deleteFile
-  - you will provide the pathName you have given during insertFile.
-  - afterwards, it will delete the file from your local storage
+  - You will provide the pathName you have given during insertFile.
+  - Afterwards, it will delete the file from your local storage.
+    
 3. updateFile
-  - you will provide the pathName and also a file.
-  - Both insertFile and deleteFile functions is used in this function
+  - You will provide the pathName and also a file.
+  - Both insertFile and deleteFile functions is used in this function.
+
+Supporting Packages
+  - nanoid (https://www.npmjs.com/package/nanoid)
