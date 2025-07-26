@@ -1,21 +1,24 @@
 import { Buffer } from "node:buffer";
 import * as fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import nanoid from "./lib/nanoid";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export async function insertFile(file: any, folderName: string) {
+export async function insertFile(
+	file: any,
+	folderName: string,
+	uploadDir?: string
+) {
 	const buffer = await file.arrayBuffer(); // Ensure this is awaited
 
 	// Use provided year or current year
 	const targetYear = new Date().getFullYear();
 
 	const upload_path = `/uploads/${targetYear}/${folderName}/${nanoid()}.${file.name.split(".").pop()}`;
-	const fullUploadPath = path.join(__dirname, "../", upload_path);
+	// Use process.cwd() to get the user's project root, not the package location
+	// Allow custom upload directory or default to current working directory
+	const baseDir = uploadDir || process.cwd();
+	const fullUploadPath = path.join(baseDir, upload_path);
 
 	// Ensure the directory exists
 	fs.mkdirSync(path.dirname(fullUploadPath), { recursive: true });
@@ -25,20 +28,24 @@ export async function insertFile(file: any, folderName: string) {
 	return upload_path;
 }
 
-export async function deleteFile(filePath: string) {
+export async function deleteFile(filePath: string, uploadDir?: string) {
 	// delete the file
-	const fullFilePath = path.join(__dirname, "../", filePath);
+	// Use process.cwd() to get the user's project root, not the package location
+	// Allow custom upload directory or default to current working directory
+	const baseDir = uploadDir || process.cwd();
+	const fullFilePath = path.join(baseDir, filePath);
 	fs.unlinkSync(fullFilePath);
 }
 
 export async function updateFile(
 	file: any,
 	oldFilePath: string,
-	folderName: string
+	folderName: string,
+	uploadDir?: string
 ) {
 	// delete the old file
-	deleteFile(oldFilePath);
+	await deleteFile(oldFilePath, uploadDir);
 
 	// upload the new file
-	return insertFile(file, folderName);
+	return insertFile(file, folderName, uploadDir);
 }
