@@ -17,3 +17,6 @@
 
 Supporting Packages
   - nanoid (https://www.npmjs.com/package/nanoid)
+
+Library Link
+  - local-file-upload (https://www.npmjs.com/package/local-file-upload)
