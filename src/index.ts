@@ -9,7 +9,18 @@ export async function insertFile(
 	folderName: string,
 	uploadDir?: string
 ) {
-	const buffer = await file.arrayBuffer(); // Ensure this is awaited
+	let buffer: ArrayBuffer | Buffer;
+	if (typeof file.arrayBuffer === "function") {
+		// Hono/browser style
+		buffer = await file.arrayBuffer();
+	} else if (file.buffer) {
+		// Node.js (e.g., multer) style
+		buffer = file.buffer;
+	} else {
+		throw new Error(
+			"Unsupported file object: must have arrayBuffer() method or buffer property"
+		);
+	}
 
 	// Use provided year or current year
 	const targetYear = new Date().getFullYear();
@@ -23,7 +34,8 @@ export async function insertFile(
 	// Ensure the directory exists
 	fs.mkdirSync(path.dirname(fullUploadPath), { recursive: true });
 
-	fs.writeFileSync(fullUploadPath, Buffer.from(buffer));
+	const dataToWrite = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
+	fs.writeFileSync(fullUploadPath, dataToWrite);
 
 	return upload_path;
 }
